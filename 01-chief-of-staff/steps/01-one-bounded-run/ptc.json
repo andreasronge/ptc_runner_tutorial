@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "workflow": {
+    "components": [
+      {
+        "id": "chief.workflow",
+        "path": "workflow.clj",
+        "dependencies": [
+          "agent.core"
+        ]
+      },
+      {
+        "library": "agent.core"
+      }
+    ],
+    "entry": "chief.workflow/run"
+  },
+  "input": {
+    "value": {
+      "task": "TechStart Inc has $10,000,000 in the bank and burns $500,000 a month. Compute the runway in whole months and return a map with the keys \"runway_months\", \"cash_usd\" and \"monthly_burn_usd\"."
+    }
+  },
+  "providers": {
+    "workflow": [
+      {
+        "name": "chief_model"
+      }
+    ]
+  },
+  "missions": {
+    "default": {}
+  },
+  "limits": {
+    "run_duration_ms": 120000,
+    "workflow_timeout_ms": 90000
+  },
+  "labels": {
+    "name": "chief-of-staff-01-one-bounded-run",
+    "tags": {
+      "mode": "agent"
+    }
+  }
+}

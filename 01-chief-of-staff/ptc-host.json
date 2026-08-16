@@ -1,0 +1,51 @@
+{
+  "credentials": {
+    "openrouter_key": {
+      "env": "OPENROUTER_API_KEY"
+    }
+  },
+  "limits": {
+    "run_duration_ms": 300000,
+    "workflow_timeout_ms": 120000,
+    "subordinate_evaluations": 100,
+    "workflow_capability_calls": 200,
+    "mission_capability_calls": 200
+  },
+  "install": {
+    "chief_model": {
+      "source": "llm",
+      "installation_revision": "chief-of-staff-v1",
+      "model": "openrouter:deepseek/deepseek-v4-flash",
+      "credential": "openrouter_key",
+      "cache": false
+    },
+    "financials": {
+      "source": "mcp",
+      "installation_revision": "chief-of-staff-financials-v1",
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "cwd": ".",
+        "args": [
+          "../mcp/filesystem/server.js",
+          "--root",
+          "data",
+          "--include",
+          "**"
+        ],
+        "inherit_environment": true,
+        "env": {}
+      },
+      "tools": {
+        "list_directory": {
+          "as": "files.list",
+          "effect": "read"
+        },
+        "read_text_file": {
+          "as": "files.read",
+          "effect": "read"
+        }
+      }
+    }
+  }
+}

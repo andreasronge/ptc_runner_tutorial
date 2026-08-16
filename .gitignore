@@ -1,0 +1,19 @@
+# Credentials. Each project document names its own .env; none is committed.
+.env
+*.env
+!.env.example
+
+# Run artifacts: traces, envelopes, and the inspection capture.
+.ptc/
+
+# Private artifacts reserved by --inspect / --private-output. These are
+# owner-only and can contain prompts, model responses and generated source.
+.ptc-private-*/
+*.inspection.jsonl
+*.private.jsonl
+*.private.json
+
+# Copied from the PtcRunner checkout by install.sh, see mcp/README.md
+mcp/filesystem/
+
+.DS_Store

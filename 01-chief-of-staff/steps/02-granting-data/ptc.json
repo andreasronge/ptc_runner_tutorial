@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "workflow": {
+    "components": [
+      {
+        "id": "chief.workflow",
+        "path": "workflow.clj",
+        "dependencies": [
+          "agent.core"
+        ]
+      },
+      {
+        "library": "agent.core"
+      }
+    ],
+    "entry": "chief.workflow/run"
+  },
+  "input": {
+    "value": {
+      "task": "What's our runway? Check the financial data files as well as the snapshot, and if they disagree say so: report each figure, name the source you took it from, and say which one you would give the CEO and why."
+    }
+  },
+  "providers": {
+    "workflow": [
+      {
+        "name": "chief_model"
+      }
+    ],
+    "mission": [
+      {
+        "name": "financials"
+      }
+    ]
+  },
+  "missions": {
+    "default": {
+      "components": [
+        {
+          "id": "chief.finance",
+          "path": "finance.clj"
+        }
+      ],
+      "data": {
+        "snapshot": {
+          "company": "TechStart Inc",
+          "cash_usd": 10000000,
+          "monthly_burn_usd": 500000,
+          "runway_months": 20,
+          "arr_usd": 2400000,
+          "headcount": 50
+        }
+      },
+      "providers": [
+        "financials"
+      ]
+    }
+  },
+  "limits": {
+    "run_duration_ms": 240000,
+    "workflow_timeout_ms": 120000,
+    "subordinate_evaluations": 40,
+    "workflow_capability_calls": 120,
+    "mission_capability_calls": 60
+  },
+  "labels": {
+    "name": "chief-of-staff-02-granting-data",
+    "tags": {
+      "mode": "agent"
+    }
+  }
+}
