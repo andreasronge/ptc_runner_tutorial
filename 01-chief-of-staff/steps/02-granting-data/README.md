@@ -166,6 +166,17 @@ this happened, and the correction is one of the loop's rules rather than
 anything the runtime enforces. The exchange is visible in the Viewer's Model
 conversation panel, or with `./analyze --private`.
 
+> **Why one program per turn?** In an ordinary tool-calling agent, parallel
+> tool calls are how you batch work. Here the program is the batching
+> mechanism, and it does more: `(let [snap (chief.finance/snapshot) files
+> (chief.finance/list-files)] ...)` shares bindings and fixes the order, which
+> two separate calls cannot. Parallelism is still available, inside the program
+> through `pmap` and `pcalls`, under a worker cap the operator set. A turn is
+> also one evaluation, so the turn budget, the committed definitions, the
+> `*1`/`*2`/`*3` history and `return`/`fail` all have one outcome to describe.
+> The rule lives in the shipped `agent.native` component rather than the
+> runtime, so a different loop could choose otherwise.
+
 The next turn also shows how results come back:
 
 ```text
