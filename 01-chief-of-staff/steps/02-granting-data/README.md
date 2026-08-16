@@ -150,17 +150,6 @@ contract the analysis REPL uses.
 
 ## The loop correcting the model
 
-The Viewer shows the same run as a conversation. Start it from the PtcRunner
-checkout:
-
-```console
-cd ~/projects/ptc_runner
-mix ptc.viewer ../ptc_runner_tutorial/01-chief-of-staff/02-granting-data.ptc-project.json
-```
-
-![The Viewer's Model conversation panel, showing two tool calls in one turn,
-the protocol error the loop returned, and the corrected single call](viewer-model-conversation.png)
-
 This run went wrong on turn 1. The model asked for two programs at once,
 `(chief.finance/snapshot)` and `(chief.finance/list-files)`, and the loop
 refused:
@@ -174,7 +163,8 @@ TURN BUDGET: 9 turns remain, including the next program.
 
 The model then sent one call and carried on. Nothing in the result hints that
 this happened, and the correction is one of the loop's rules rather than
-anything the runtime enforces.
+anything the runtime enforces. The exchange is visible in the Viewer's Model
+conversation panel, or with `./analyze --private`.
 
 The next turn also shows how results come back:
 

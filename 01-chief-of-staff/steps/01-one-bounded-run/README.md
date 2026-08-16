@@ -107,41 +107,33 @@ whether a browser opens, and whether private evidence is authorized:
 "viewer": {"port": 4123, "open": true, "repl": true, "private": true}
 ```
 
-`"private": true` is what unlocks the generated program and the model
-conversation. Without it you get run summaries and canonical events only.
+`"private": true` authorizes the inspection artifact, which is what makes the
+generated program and the model conversation visible.
 
-The **Model conversation** panel shows the exchange itself: the task as the
-model received it, the `run_ptc_lisp` tool call it replied with, and the
-program inside it.
+Two panels carry most of the value. **Environment** is what the run was given,
+and **Execution transcript** is what it did with it.
 
-![The Viewer's Model conversation panel, showing the task, the run_ptc_lisp
-tool call, and the generated PTC-Lisp program](viewer-model-conversation.png)
+![The Viewer showing the Environment panel with workflow and mission preludes,
+mission inventory and connector fingerprints, above the Execution transcript
+listing capability calls in canonical order](viewer.png)
 
-Note the `TURN BUDGET: 6 turns remain` appended to the task, and that the
-assistant's `content` is empty: the whole reply is the tool call.
+The screenshot is from chapter 2, which has more to show. Reading it:
 
-The Viewer shows more than the REPL does. Alongside each run it lists the
-effective components in load order, and with an inspection artifact every
-entry opens its exact captured source:
+- **Workflow prelude**, 10 components in load order, dependencies before
+  dependants. Nine are shipped libraries; `chief.workflow` at the end is the
+  four lines above. Each has a `source` link, and `agent.core` lists the eight
+  components it needs.
+- **Mission prelude**, separately, holding only what mission code may call.
+  Chapter 1 has none, so the model gets nothing but the language.
+- **Connectors**, with the protocol each speaks and how many tools it exposes.
+  `financials` reports `mcp-2026-07-28 · 2 tools`, which is the whole grant.
+- **Execution transcript**, every capability call in order with its duration.
+  The repeating `kernel-mission-model-context`, `llm-request`,
+  `workflow-annotate`, `kernel-eval` group is one turn of the loop.
 
-```text
-agent.feedback     workflow   5170B
-agent.native       workflow   3365B
-agent.retry        workflow    460B
-kernel             workflow   2576B
-agent.prompt       workflow  12384B
-llm                workflow    389B
-result             workflow    441B
-workflow.event     workflow    257B
-agent.core         workflow  17140B
-chief.workflow     workflow    188B
-```
-
-Nine of those are the shipped libraries. The last is `workflow.clj` from this
-chapter. `agent.core` is the agent loop and `agent.prompt` builds the system
-prompt shown above, both readable in full. Generated programs carry statically
-analyzed prelude calls, so a call in the model's program links to the component
-function it invoked.
+The `PRIVATE EVIDENCE` badges mark what came from the inspection artifact
+rather than the trace. Without `"private": true` those panels still list the
+components, but the `source` links are not there.
 
 The Viewer needs the PtcRunner source checkout. There is no `viewer`
 subcommand in the release binary, so `./analyze` is the option that works
