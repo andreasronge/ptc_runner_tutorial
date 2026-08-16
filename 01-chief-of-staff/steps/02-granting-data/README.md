@@ -71,9 +71,35 @@ tool.
 
 ## Making it visible
 
-Mission data is granted but never shown to the model. Neither are raw tools,
-once a facade exists. What the model sees is `finance.clj`, marked
-`{:visibility :prompt}`:
+Everything the mission grants is rendered into the prompt. This is the
+`Available API` section the model actually received, trimmed:
+
+```text
+Available API
+API notes
+- chief.finance: What the chief of staff can see: the company snapshot, and the
+   financial data files.
+
+- Call: (chief.finance/read-page path cursor)
+  Type: (path :string, cursor :string?) -> :any?
+  Effect: read
+  Docs: Read one bounded page of a data file. Pass nil as the cursor first,
+   then the next_cursor from the previous page, until next_cursor is nil.
+
+- Call: (chief.finance/snapshot)
+  Type: () -> :any?
+  Docs: The company snapshot: cash, burn, ARR, headcount. High-level figures
+   kept with the project, not measured from the source data.
+
+- Value: data/snapshot
+  Type: {}
+```
+
+Mission data appears on its own, so a manifest value is reachable without any
+code. Tools are different. A raw `tool/files.read` call takes an argument map and
+returns a status envelope the model has to unwrap correctly every time. A
+prompt-visible facade turns that into a function with a signature and a
+docstring. `finance.clj` is that facade:
 
 ```clojure
 (ns chief.finance
@@ -99,50 +125,46 @@ once a facade exists. What the model sees is `finance.clj`, marked
       (fail response))))
 ```
 
-These docstrings are the model's only clue about which source is authoritative.
-That judgement is written once, in the facade, instead of in every task string.
+Wrapping `snapshot` too is worth it for one reason: the docstring. "High-level
+figures kept with the project, not measured from the source data" is the
+model's clue about which source is authoritative when the two disagree. That
+judgement is written once, in the facade, instead of in every task string.
 
-Skip the facade and the run fails. Asked the bare question against chapter 1's
-manifest, with mission data but nothing prompt-visible, the model spent every
-turn hunting for the data and then guessed:
-
-| turn | program | result |
-| --- | --- | --- |
-| 0 | `(dir)` | `[]` |
-| 1 | `(apropos "runway")` | `[]` |
-| 2 | `(dir "data")` | `[]` |
-| 3 | `(return (get data/input "runway"))` | `nil` |
+A facade also hides the raw tools. Once any prompt-visible function exists,
+the `tool/...` entries are suppressed, so the model sees `read-page` rather
+than `files.read` and the paging contract rather than an envelope.
 
 ## What the model wrote
 
 ```console
-./analyze                              # public view, interactive
-./analyze --private -e '(source -1)'   # one private query
+ptc repl --project 02-granting-data.ptc-project.json \
+         --profile run-analysis-v1 -l analysis.clj
+
+ptc repl --project 02-granting-data.ptc-project.json \
+         --profile private-run-analysis-v1 --private-unattended \
+         -l analysis.clj -e '(source -1)'
 ```
 
 ```clojure
 > (turns -1)
-turn   model      tokens     program    eval  outcome
-   0    2105ms   1265->77       24B     1ms  continued
-   1    1771ms   1452->114      26B    32ms  continued
-   2    1256ms   1751->72       45B    35ms  continued
-   3    2499ms   2077->192      53B     7ms  continued
-   4    5146ms   2769->459      48B    10ms  continued
-   5    3970ms   3269->353      46B    17ms  continued
-   6    5695ms   3849->571    1035B    86ms  continued
-   7    8684ms   4350->883    1305B     6ms  returned
+turn   model      tokens      program   eval  outcome
+   0    3674ms   1289->119      174B    18ms  continued
+   1    6411ms   1697->227      411B    52ms  continued
+   2   14090ms   2764->695      160B     9ms  continued
+   3   26435ms   3494->1318    1331B    52ms  continued
+   4   32719ms   4253->1372    3625B     4ms  returned
 
-$ ./analyze --private -e '(source -1)'
-turn 0:  (chief.finance/snapshot)
-turn 1:  (chief.finance/list-files)
-turn 2:  (chief.finance/read-page "burn_rate.csv" nil)
-turn 3:  (chief.finance/read-page "revenue_forecast.json" nil)
-...
+> (source -1)
+turn 0:  (println "Step 1: list files and snapshot")
+turn 1:  (println "Reading all files...")
+turn 2:  ;; Get the rest of the revenue forecast
+turn 3:  ;; Parse the burn rate CSV and compute runway
+turn 4:  ;; Check the data/snapshot value directly
 ```
 
-Six small programs listing files and paging through them, then two large ones
-that do the analysis and return. One `files.list`, five `files.read`, eight
-model calls, about $0.0035.
+Programs grow from 174 bytes to 3.6KB as the model gathers pages and then does
+the analysis in one go. Model latency dominates: 32 seconds on the last turn
+against 4 milliseconds to run its program.
 
 Files arrive one bounded page at a time. `read-page` takes a cursor and returns
 the next one, so a long file costs several turns. This is the same paging
@@ -164,7 +186,7 @@ TURN BUDGET: 9 turns remain, including the next program.
 The model then sent one call and carried on. Nothing in the result hints that
 this happened, and the correction is one of the loop's rules rather than
 anything the runtime enforces. The exchange is visible in the Viewer's Model
-conversation panel, or with `./analyze --private`.
+conversation panel, or with the private profile above.
 
 > **Why one program per turn?** In an ordinary tool-calling agent, parallel
 > tool calls are how you batch work. Here the program is the batching

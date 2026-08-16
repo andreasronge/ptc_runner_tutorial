@@ -17,6 +17,10 @@ Format:
 - **Possible improvement** — a suggestion, not a demand.
 - **Status** — `open`, `filed #NNN`, `fixed`, or `wontfix — reason`.
 
+**Status:** F1 to F10, F12 and F13 were fixed in PtcRunner 0.13.0
+(`bd067d3f`, "feat(dx): address tutorial friction"). F11 and F14 remain open.
+Each entry keeps its original text so the fix has something to read against.
+
 ---
 
 ## 2026-08-16 — Series planning and scaffolding
@@ -52,7 +56,7 @@ Format:
 - **Possible improvement** A short "supported model providers" table in
   `host-configuration.md` listing the accepted prefixes and one example ID
   each, plus a note on which ones enable prompt caching.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `host-configuration.md` now carries a provider table listing the `anthropic:` prefix and its credential.
 
 ### F2. No reusable write-capable MCP sample
 
@@ -75,7 +79,7 @@ Format:
   the filesystem reader, with its own README covering confinement, the `allow`
   list requirement, and the retry/effect consequences. It does not need to be
   larger than the existing `.exs` — it needs to be findable and explained.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `examples/mcp/writer` now ships alongside the filesystem sample.
 
 ### F3. Using PtcRunner from a project that lives outside the checkout
 
@@ -96,7 +100,7 @@ Format:
 - **Possible improvement** A short section in `running-and-debugging.md` or
   `host-configuration.md` on projects outside the checkout: how transport paths
   resolve, what a release install changes, and the recommended layout.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `host-configuration.md` covers an application in a separate repository.
 
 ### F4. `building-agents.md` does not mention running more than one agent
 
@@ -116,7 +120,7 @@ Format:
 - **Possible improvement** A "Compose several agents" section in
   `building-agents.md` showing two `agent.core/run-outcome` calls against two
   missions, linking to the existing example.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `building-agents.md` has a "Compose several agents" section.
 
 ### F5. Concurrent agents are asserted but not demonstrated
 
@@ -135,7 +139,7 @@ Format:
 - **Possible improvement** Either a runnable fan-out example or a paragraph in
   `building-agents.md` showing the intended shape and explaining what the
   shared admission queue means for wall-clock time.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `building-agents.md` documents `pmap` for parallel loops and what they share.
 
 ### F6. A failed provider call gives no diagnosable reason
 
@@ -165,7 +169,7 @@ Format:
   `rate_limited`, `timeout`, `other`). Even without that, the terminal message
   could name the failing alias and mention `--envelope` / `--trace-dir`.
   A `mix ptc doctor --connect` hint on this specific failure would also work.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). A rejected request now reports `execution/llm_request_invalid` instead of `workflow_failed`.
 
 ### F7. Nothing catches a model ID the pinned catalog doesn't know
 
@@ -184,7 +188,7 @@ Format:
 - **Possible improvement** Have `mix ptc validate` (or `doctor`) check each
   installed `llm` model ID against the resolver's catalog and warn on a miss —
   a warning rather than an error, so a legitimately newer model still runs.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `host-configuration.md` documents that a selector absent from the bundled catalog stays usable, so pass-through is deliberate and stated.
 
 ### F8. A missing `.env` reports a constraint instead of the problem
 
@@ -213,7 +217,7 @@ Format:
   distinguish the causes in the message — "no such file" reads very
   differently from "not valid UTF-8". Both are safe to disclose: the path comes
   from the project document the caller wrote, not from file contents.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). Now reports `environment_file_not_found: the named environment file does not exist`.
 
 ### F9. `analysis/runs` prints a wall of text for a first look
 
@@ -235,7 +239,7 @@ Format:
   duration, llm calls, terminal reason) with the full map available on request,
   or a documented projection argument in the guide's example so the first
   command a reader runs returns something readable.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `analysis/runs` returns a compact projection by default; `{"view" "full"}` opts back in.
 
 ### F10. `format` silently ignores width and alignment flags
 
@@ -262,7 +266,7 @@ Format:
   they are deliberately out of scope, reject them at compile time instead of
   dropping them, and record the divergence in
   `docs/clojure-conformance-gaps.md` alongside DIV-21.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `(format "[%5s][%-8s]" "ab" "cd")` now returns `"[   ab][cd      ]"`.
 
 ### F11. There is no on-ramp to a file-serving MCP installation
 
@@ -341,7 +345,7 @@ Format:
   return something real, or stop advertising them when they cannot. If an empty
   `Available API` is a legitimate state, say so in the section rather than
   leaving it blank under a heading.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). Mission data renders into `Available API` with name, type and effect, and the prompt now states what `dir`/`apropos` do and do not cover. An empty section says so explicitly.
 
 ### F13. Analysing a project's own runs cannot reuse its project document
 
@@ -378,7 +382,7 @@ Format:
   overridable by explicit `--resource`). Failing that, a documented shorthand
   for "the analysis profile over this project's artifacts" would remove the
   need for a wrapper.
-- **Status** open
+- **Status** fixed in 0.13.0 (bd067d3f). `ptc repl --project P --profile run-analysis-v1` works and derives the artifact directories.
 
   **Related, and worse for the private profile.** `--private-terminal`
   authorizes an interactive session but "rejects scripts, stdin, `--eval`,

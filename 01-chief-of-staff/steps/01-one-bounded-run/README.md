@@ -63,12 +63,13 @@ Turn on the inspection artifact in the project file:
 "artifacts": {"trace": true, "inspection": true}
 ```
 
-then open a REPL over the captured runs. `analyze` wraps `ptc repl` with the
-profile, resource directories and privacy flag it needs, and loads
-`analysis.clj`:
+then open a REPL over the captured runs. `--project` reuses the chapter's
+artifact directories, so there is nothing to retype:
 
 ```console
-./analyze --private -e '(source -1)'
+ptc repl --project 01-one-bounded-run.ptc-project.json \
+         --profile private-run-analysis-v1 --private-unattended \
+         -l analysis.clj -e '(source -1)'
 ```
 
 ```clojure
@@ -78,9 +79,16 @@ turn 0:  (return {"runway_months" (int (/ 10000000 500000)) "cash_usd" 10000000 
 98 bytes, one turn.
 
 Private queries run one at a time, because an interactive private session is
-not allowed to load a setup file. The public view has no such limit: `./analyze`
-opens a normal REPL where `(runs)`, `(turns n)` and `(failed)` work from the
-trace alone, with no inspection artifact.
+not allowed to load a setup file. The public profile has no such limit, and
+works from the trace alone with no inspection artifact:
+
+```console
+ptc repl --project 01-one-bounded-run.ptc-project.json \
+         --profile run-analysis-v1 -l analysis.clj
+```
+
+That opens an interactive session where `(runs)`, `(turns n)` and `(failed)`
+are available.
 
 ```text
 turn   model      tokens     program    eval  outcome
@@ -136,7 +144,7 @@ rather than the trace. Without `"private": true` those panels still list the
 components, but the `source` links are not there.
 
 The Viewer needs the PtcRunner source checkout. There is no `viewer`
-subcommand in the release binary, so `./analyze` is the option that works
+subcommand in the release binary, so the REPL above is the option that works
 everywhere.
 
 ## About PTC-Lisp
