@@ -100,11 +100,11 @@ never went to the model.
 
 ## Or use the Viewer
 
-The same evidence, in a browser. From the PtcRunner checkout:
+The same evidence, in a browser:
 
 ```console
-cd ~/projects/ptc_runner
-mix ptc.viewer ../ptc_runner_tutorial/01-chief-of-staff/01-one-bounded-run.ptc-project.json
+cd 01-chief-of-staff
+ptc viewer 01-one-bounded-run.ptc-project.json
 ```
 
 It reads the trace and inspection directories named by the project file, and
@@ -142,10 +142,6 @@ The screenshot is from chapter 2, which has more to show. Reading it:
 The `PRIVATE EVIDENCE` badges mark what came from the inspection artifact
 rather than the trace. Without `"private": true` those panels still list the
 components, but the `source` links are not there.
-
-The Viewer needs the PtcRunner source checkout. There is no `viewer`
-subcommand in the release binary, so the REPL above is the option that works
-everywhere.
 
 ## About PTC-Lisp
 

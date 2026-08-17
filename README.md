@@ -14,21 +14,26 @@ outline and the design decisions behind it.
 
 ## Setup
 
-These tutorials run from a PtcRunner source checkout. Clone both repositories
-side by side:
+Every command in these tutorials uses the `ptc` executable. Clone both
+repositories side by side and build it once:
 
 ```console
 git clone https://github.com/andreasronge/ptc_runner
 git clone https://github.com/andreasronge/ptc_runner_tutorial
-cd ptc_runner && mix deps.get
+cd ptc_runner_tutorial && ./install.sh
 ```
+
+`install.sh` builds PtcRunner's runtime-included release, puts `ptc` on your
+PATH, and copies the read-only filesystem MCP server that chapter 2 onward
+reads files through. The build needs Elixir and Erlang (the checkout pins them
+in `mise.toml`; `mise install` provides both); running `ptc` afterwards does
+not.
 
 Supply a model credential for the tutorial you're running:
 
 ```console
-cp ../ptc_runner_tutorial/01-chief-of-staff/.env.example \
-   ../ptc_runner_tutorial/01-chief-of-staff/.env
-chmod 600 ../ptc_runner_tutorial/01-chief-of-staff/.env
+cp 01-chief-of-staff/.env.example 01-chief-of-staff/.env
+chmod 600 01-chief-of-staff/.env
 ```
 
 Fill in an [OpenRouter](https://openrouter.ai/keys) key. Nothing is loaded
