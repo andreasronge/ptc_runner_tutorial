@@ -43,7 +43,7 @@ implicitly — each project document names the exact file it reads.
 
 | # | Tutorial | Ports | Status |
 | --- | --- | --- | --- |
-| 01 | [The chief of staff agent](01-chief-of-staff/) | `01_The_chief_of_staff_agent.ipynb` | Chapters 1-2 of 8 |
+| 01 | [The chief of staff agent](01-chief-of-staff/) | `01_The_chief_of_staff_agent.ipynb` | Chapters 1-3 of 8 |
 
 ### 01 — The chief of staff agent
 
@@ -54,7 +54,7 @@ raised a $10M Series A.
 | --- | --- | --- |
 | 1 | [One bounded run](01-chief-of-staff/steps/01-one-bounded-run/) | The manifest, the shipped agent loop, the turn protocol, the real system prompt |
 | 2 | [Granting data instead of assuming a directory](01-chief-of-staff/steps/02-granting-data/) | Read-only filesystem MCP over the financial data; mission data vs. authoritative source |
-| 3 | Domain logic as a mission API | The cookbook's Python scripts as prompt-visible PTC-Lisp |
+| 3 | [Domain logic as a mission API](01-chief-of-staff/steps/03-domain-logic/) | The cookbook's five Python scripts as prompt-visible PTC-Lisp the model composes in one program |
 | 4 | Specialists are missions | `financial-analyst` and `recruiter` as named missions with different grants |
 | 5 | Running specialists in parallel | `pmap` fan-out and the shared admission queue |
 | 6 | Plan and act are two authorities | A plan phase whose mission has no write tool |

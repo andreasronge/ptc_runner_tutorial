@@ -18,8 +18,9 @@ Format:
 - **Status** — `open`, `filed #NNN`, `fixed`, or `wontfix — reason`.
 
 **Status:** F1 to F10, F12 and F13 were fixed in PtcRunner 0.13.0
-(`bd067d3f`, "feat(dx): address tutorial friction"). F11 and F14 remain open.
-Each entry keeps its original text so the fix has something to read against.
+(`bd067d3f`, "feat(dx): address tutorial friction"). F11, F14, F15 and F16
+remain open. Each entry keeps its original text so the fix has something to
+read against.
 
 ---
 
@@ -480,3 +481,37 @@ Each entry keeps its original text so the fix has something to read against.
   stating the evaluation authority is public-trace only.
 - **Status** open
 
+
+### F16. `bundle/compile_failed` names a byte range but never the reason
+
+- **Hit while** writing chapter 3's domain component, whose `:signature`
+  strings used `:number` and `:vector` — types that do not exist in the
+  signature grammar (`docs/signature-syntax.md` has `:float` and `[:map]`
+  instead).
+- **What happened** `ptc validate` (and `ptc repl --mission`) reported only:
+
+  ```text
+  error: bundle/compile_failed: the component bundle could not be compiled
+  at domain.clj bytes [296,709) (run_ref: cmd-…)
+  ```
+
+  The byte range points at the failing `defn`, which is genuinely useful — but
+  nothing says *what* about it failed. A wrong signature type, a syntax error,
+  and an unresolved symbol all produce the same message. Diagnosing it took
+  bisection: five `ptc validate` runs against stripped-down variants of the
+  form (map-literal body, private-helper call, docstring-only, metadata-only)
+  before the signature string emerged as the difference against a chapter 2
+  component that compiled. A one-line reason would have made it a ten-second
+  fix, since the grammar doc is clear once you know to read it.
+- **Why it's friction** Signatures are the first thing an application author
+  writes when promoting code into a prompt-visible API — exactly this series'
+  chapter 3 — and guessing `:number` for money or `:vector` for a list is the
+  natural mistake coming from JSON Schema or docstring conventions. The
+  compiler evidently knows the failing form's position, so it knows which
+  check failed; withholding the check's name turns a spelling mistake into a
+  bisection exercise.
+- **Possible improvement** Append the failing check to the diagnostic —
+  `unknown signature type :number in chief.domain/metrics` — or at minimum
+  the error class (`invalid_signature`, `syntax_error`, `unresolved_symbol`).
+  The byte range is already there; the reason is the missing half.
+- **Status** open

@@ -3,7 +3,7 @@
   "kind": "ptc-project",
   "version": 1,
   "application": {
-    "path": "steps/02-granting-data/ptc.json"
+    "path": "steps/03-domain-logic/ptc.json"
   },
   "host": {
     "path": "ptc-host.json",
@@ -19,9 +19,9 @@
     "envelope": true
   },
   "viewer": {
-    "port": 4125,
-    "open": false,
-    "repl": false,
+    "port": 4123,
+    "open": true,
+    "repl": true,
     "private": true
   }
 }

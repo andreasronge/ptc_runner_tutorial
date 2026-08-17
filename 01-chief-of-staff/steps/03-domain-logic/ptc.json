@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "workflow": {
+    "components": [
+      {
+        "id": "chief.workflow",
+        "path": "workflow.clj",
+        "dependencies": [
+          "agent.core"
+        ]
+      },
+      {
+        "library": "agent.core"
+      }
+    ],
+    "entry": "chief.workflow/run"
+  },
+  "input": {
+    "value": {
+      "task": "Should we hire 3 senior engineers at $200k or 5 junior engineers at $130k? Model the hiring impact of each option, forecast ARR for the next 12 months at 15% monthly growth to see when revenue covers the new burn, and run a decision matrix over both options on cost, productivity, time_to_impact, team_growth and runway_impact (score them 1-10 yourself, justify the scores). Recommend one option with the numbers that support it."
+    }
+  },
+  "providers": {
+    "workflow": [
+      {
+        "name": "chief_model"
+      }
+    ],
+    "mission": [
+      {
+        "name": "financials"
+      }
+    ]
+  },
+  "missions": {
+    "default": {
+      "components": [
+        {
+          "id": "chief.finance",
+          "path": "finance.clj"
+        },
+        {
+          "id": "chief.domain",
+          "path": "domain.clj"
+        }
+      ],
+      "data": {
+        "snapshot": {
+          "company": "TechStart Inc",
+          "cash_usd": 10000000,
+          "monthly_burn_usd": 500000,
+          "runway_months": 20,
+          "arr_usd": 2400000,
+          "headcount": 50
+        }
+      },
+      "providers": [
+        "financials"
+      ]
+    }
+  },
+  "limits": {
+    "run_duration_ms": 240000,
+    "workflow_timeout_ms": 120000,
+    "subordinate_evaluations": 40,
+    "workflow_capability_calls": 120,
+    "mission_capability_calls": 60
+  },
+  "labels": {
+    "name": "chief-of-staff-03-domain-logic",
+    "tags": {
+      "mode": "agent"
+    }
+  }
+}
