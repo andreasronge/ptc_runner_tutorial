@@ -436,3 +436,47 @@ Each entry keeps its original text so the fix has something to read against.
   prefix in the private-inspection section of `running-and-debugging.md`.
 - **Status** open
 
+---
+
+## 2026-08-17 — Viewer
+
+### F15. The Viewer makes REPL and private evidence mutually exclusive, silently
+
+- **Hit while** using the Viewer to teach chapter 2: run the workflow, read
+  the generated PTC-Lisp programs, and query the trace from the browser REPL —
+  the three things a learner wants in one place.
+- **What happened** One viewer instance can show the REPL **or** the private
+  evidence (generated program source, model conversation), never both.
+  `lib/ptc_runner/viewer_frontend.ex` only wires the REPL when `repl: true`
+  **and** `private` is false:
+
+  ```elixir
+  defp repl_adapter(%{viewer: %{repl: true}}, false),
+    do: PtcRunner.Kernel.ViewerReplAdapter
+  defp repl_adapter(_project, _private?), do: nil
+  ```
+
+  With `"repl": true, "private": true` the REPL is dropped **silently** — no
+  startup warning, no disabled tab, nothing in the UI says why. The chapter's
+  project file shipped exactly that combination, so the REPL tab simply never
+  appeared and the reason had to be found in Elixir source.
+  `docs/reference/project-files.md` documents both flags without mentioning
+  they exclude each other. Seeing everything currently means two viewer
+  instances from two project files on two ports.
+- **Why it's friction** The stated model is that a browser session cannot
+  carry private authority, which motivates keeping the *REPL* on the public
+  `run-analysis-v1` profile. But the REPL has only public-trace authority
+  regardless of the `private` flag, so disabling it when private panels are
+  *displayed* does not narrow what any evaluation can read — it couples two
+  independent grants (like F13's `--load` rejection, the rule blocks a
+  convenient path to a result it otherwise permits). For a learner the cost is
+  concrete: the two most instructive artifacts of a run — the code the model
+  wrote and an interactive way to query the trace — cannot be looked at
+  side by side.
+- **Possible improvement** In order of effort: (a) document the exclusivity in
+  `project-files.md`; (b) warn at startup and render a disabled REPL tab with
+  the reason instead of dropping it silently; (c) allow `repl: true` with
+  `private: true`, keeping the REPL session on the public profile with a badge
+  stating the evaluation authority is public-trace only.
+- **Status** open
+

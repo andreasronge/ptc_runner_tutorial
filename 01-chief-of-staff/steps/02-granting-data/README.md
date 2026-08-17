@@ -186,7 +186,8 @@ TURN BUDGET: 9 turns remain, including the next program.
 The model then sent one call and carried on. Nothing in the result hints that
 this happened, and the correction is one of the loop's rules rather than
 anything the runtime enforces. The exchange is visible in the Viewer's Model
-conversation panel, or with the private profile above.
+conversation panel when the project sets `"private": true`, or with the
+private profile above.
 
 > **Why one program per turn?** In an ordinary tool-calling agent, parallel
 > tool calls are how you batch work. Here the program is the batching
@@ -224,6 +225,67 @@ operator installs a ceiling, and the manifest asks for a value within it:
 
 Setting only the host ceiling changes nothing. Setting only the manifest fails,
 because it cannot exceed what the host installed.
+
+## Or run it from the Viewer
+
+The same run, launched from a browser:
+
+```console
+cd 01-chief-of-staff
+ptc viewer 02-granting-data.ptc-project.json
+```
+
+The **Live** tab names the workflow the project selects and shows the input
+object, pre-filled with the task above. The input object is the only thing the
+browser controls; everything else comes from the project file.
+
+![The Viewer's Live tab with the chief-of-staff workflow, the task pre-filled
+as the input object, and the Run button](viewer-run-launch.png)
+
+Frames stream in while the run executes. The card shows the budgets from the
+manifest being spent — turns, tool calls, the workflow deadline — the sandbox
+heap, and an activity feed where the repeating `llm-request`, `files.read`
+pairs are the loop's turns.
+
+![The live run card streaming: RUNNING badge, tool call and evaluation
+counters, budget bars, sandbox heap chart, and the activity
+feed](viewer-run-streaming.png)
+
+This run took 1:19, 17 tool calls, 9 evaluations. The result reports all three
+figures and hands the CEO the snapshot's 20 months as the conservative number.
+The canonical trace lands in the **Runs** tab when the run completes.
+
+![The completed run: the runway report result with the disagreement called
+out, above the COMPLETED card](viewer-run-completed.png)
+
+## Exploring the result in the Viewer REPL
+
+The **REPL** tab is the analysis REPL from the previous section, served in the
+browser. It appears when the project's viewer block has `"repl": true` and
+`"private": false`; with `"private": true` the Viewer shows private evidence
+instead and silently drops the REPL, because the browser session cannot carry
+private authority. To see both at once, this chapter ships
+`02-granting-data-private.ptc-project.json` — the same project with
+`"private": true` on port 4125 — so a second `ptc viewer` instance shows the
+generated programs and model conversation while this one keeps the REPL.
+
+The session runs the public `run-analysis-v1` profile against an immutable
+snapshot of the trace directory. List the runs, then read one:
+
+```clojure
+(analysis/runs {"limit" 3})
+(analysis/read "cmd-34gcgh2835pqwqmxwwb5bcr8sc"
+               {"collection" "activity" "limit" 10})
+```
+
+![The Viewer REPL: the analysis/read source and its JSON result in the
+transcript](viewer-repl-read.png)
+
+The snapshot is captured when the session starts. A run that finishes after
+that — including one just launched from the Live tab — is not in it, and
+reading it fails with `analysis run not found`. **Reset / Refresh** persists
+the session's own analysis trace and captures a fresh snapshot that includes
+the new run.
 
 ## Coming from the Agent SDK
 
