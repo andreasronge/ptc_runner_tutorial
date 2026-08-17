@@ -18,9 +18,9 @@ Format:
 - **Status** — `open`, `filed #NNN`, `fixed`, or `wontfix — reason`.
 
 **Status:** F1 to F10, F12 and F13 were fixed in PtcRunner 0.13.0
-(`bd067d3f`, "feat(dx): address tutorial friction"). F11, F14, F15 and F16
-remain open. Each entry keeps its original text so the fix has something to
-read against.
+(`bd067d3f`, "feat(dx): address tutorial friction"). F15 was fixed in #1469.
+F11, F14 and F16 remain open. Each entry keeps its original text so the fix
+has something to read against.
 
 ---
 
@@ -479,7 +479,10 @@ read against.
   the reason instead of dropping it silently; (c) allow `repl: true` with
   `private: true`, keeping the REPL session on the public profile with a badge
   stating the evaluation authority is public-trace only.
-- **Status** open
+- **Status** fixed (#1469, 68a7a4aa). Option (c): `viewer.repl` and
+  `viewer.private` are orthogonal, the REPL stays fixed to `run-analysis-v1`,
+  and the Viewer labels the authority boundary. `project-files.md` documents
+  it.
 
 
 ### F16. `bundle/compile_failed` names a byte range but never the reason

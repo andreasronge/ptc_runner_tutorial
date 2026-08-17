@@ -186,8 +186,7 @@ TURN BUDGET: 9 turns remain, including the next program.
 The model then sent one call and carried on. Nothing in the result hints that
 this happened, and the correction is one of the loop's rules rather than
 anything the runtime enforces. The exchange is visible in the Viewer's Model
-conversation panel when the project sets `"private": true`, or with the
-private profile above.
+conversation panel, or with the private profile above.
 
 > **Why one program per turn?** In an ordinary tool-calling agent, parallel
 > tool calls are how you batch work. Here the program is the batching
@@ -261,13 +260,12 @@ out, above the COMPLETED card](viewer-run-completed.png)
 ## Exploring the result in the Viewer REPL
 
 The **REPL** tab is the analysis REPL from the previous section, served in the
-browser. It appears when the project's viewer block has `"repl": true` and
-`"private": false`; with `"private": true` the Viewer shows private evidence
-instead and silently drops the REPL, because the browser session cannot carry
-private authority. To see both at once, this chapter ships
-`02-granting-data-private.ptc-project.json` — the same project with
-`"private": true` on port 4125 — so a second `ptc viewer` instance shows the
-generated programs and model conversation while this one keeps the REPL.
+browser. `"repl": true` enables it, independently of `"private"`, so this
+project ships with both on: the same Viewer shows the generated programs and
+the model conversation, and offers the REPL. The two settings stay separate
+authorities — REPL evaluations run the public `run-analysis-v1` profile
+against the canonical traces and cannot query the private evidence displayed
+in the panels next to them. The Viewer labels that boundary on the REPL tab.
 
 The session runs the public `run-analysis-v1` profile against an immutable
 snapshot of the trace directory. List the runs, then read one:
