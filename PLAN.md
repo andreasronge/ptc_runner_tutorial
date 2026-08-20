@@ -39,8 +39,8 @@ equivalent:
 | The cookbook's Python scripts (`hiring_impact.py`, `talent_scorer.py`, …) | Rewrite as a prompt-visible PTC-Lisp prelude component | Shows code mode's actual point: the model composes domain functions inside one program instead of relaying five tool calls |
 | Company data | Read-only filesystem MCP over the CSVs, high-level context as mission `data` | Reproduces the notebook's own "high-level context vs. authoritative source" lesson as two grants rather than a prompt nudge |
 | Specialist coordination | Parallel fan-out (`pmap`/`pcalls`) over named missions | The cookbook claims subagent parallelism; PtcRunner can demonstrate it under bounded limits |
-| Read-side MCP server | Reuse `ptc_runner/examples/mcp/filesystem` | Purpose-built for tutorials, MIT, `dist/server.js` committed — Node 22 but no `npm install` |
-| Write-side MCP server | Open — see [F2](FRICTION.md) | The repo's only write server is an undocumented `.exs` inside an unrelated example |
+| Read-side MCP server | [`ptc-fs-mcp@0.1.0`](https://www.npmjs.com/package/ptc-fs-mcp) via `npx` (replaced the in-repo `examples/mcp/filesystem` sample, which upstream removed) | Purpose-built for tutorials, MIT, pinned by version in the host document — needs Node 20.19+ and `npx`, downloaded on first use |
+| Write-side MCP server | Same package — `ptc-fs-mcp` ships `write_text_file`; map it from a separate installation when a chapter needs writes | One server, and the host decides per installation which tools become capabilities |
 | Model | OpenRouter + `deepseek/deepseek-v4-flash` | The repo's documented and tested path, and cheap enough to re-run a tutorial freely (chapter 1 costs about $0.0004). See [F1](FRICTION.md) for the direct-Anthropic gap |
 
 ## Tutorial 01 — The chief of staff agent

@@ -24,10 +24,11 @@
       "installation_revision": "chief-of-staff-financials-v1",
       "transport": {
         "type": "stdio",
-        "command": "node",
+        "command": "npx",
         "cwd": ".",
         "args": [
-          "../mcp/filesystem/server.js",
+          "-y",
+          "ptc-fs-mcp@0.1.0",
           "--root",
           "data",
           "--include",

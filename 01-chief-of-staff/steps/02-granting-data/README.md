@@ -3,7 +3,11 @@
 The agent gets the company snapshot and the cookbook's three financial data
 files. They disagree, and the agent has to say so.
 
-Needs Node.js 22+ and `mcp/filesystem/server.js`. Run `./install.sh` first.
+Needs Node.js 20.19+ and `npx`: the host document launches the published
+[`ptc-fs-mcp`](https://www.npmjs.com/package/ptc-fs-mcp) file server, which
+`npx` downloads on first use. A cold npm cache can make that first start slow
+enough to fail with a retryable `provider_acquisition_timeout` — just run it
+again.
 
 ```console
 cd 01-chief-of-staff
@@ -56,8 +60,8 @@ The files come from an MCP server the operator installed in `ptc-host.json`:
 ```json
 "financials": {
   "source": "mcp",
-  "transport": {"type": "stdio", "command": "node",
-                "args": ["../mcp/filesystem/server.js", "--root", "data", "--include", "**"]},
+  "transport": {"type": "stdio", "command": "npx",
+                "args": ["-y", "ptc-fs-mcp@0.1.0", "--root", "data", "--include", "**"]},
   "tools": {
     "list_directory": {"as": "files.list", "effect": "read"},
     "read_text_file":  {"as": "files.read", "effect": "read"}
@@ -65,8 +69,16 @@ The files come from an MCP server the operator installed in `ptc-host.json`:
 }
 ```
 
-`ptc.json` selects the name `financials`. It cannot change the directory, add a
-write tool, or relabel the effects. MCP is the only way to give a project a
+The server is the pinned [`ptc-fs-mcp`](https://www.npmjs.com/package/ptc-fs-mcp)
+npm package. `--include` is mandatory and the default is no files, so a server
+started without it exposes nothing; transport paths resolve relative to the
+host document, so `--root data` is the `data/` directory next to
+`ptc-host.json`.
+
+`ptc.json` selects the name `financials`. It cannot change the directory,
+relabel the effects, or add a write tool — the package ships one
+(`write_text_file`), but the host maps only the two read tools, so a generated
+program cannot resolve it at all. MCP is the only way to give a project a
 tool.
 
 ## Making it visible
@@ -296,9 +308,10 @@ commentary notes that agents "naturally seek the most authoritative data
 sources available".
 
 Here the two sources arrive through different mechanisms. The snapshot is
-manifest data. The files come through a read-effect capability over a frozen
-snapshot with a content hash, so a figure the agent cites is bound to the exact
-bytes it read. Asking it to name its source has an answer.
+manifest data. The files come through a read-effect capability whose every
+result carries a `content_hash` — the digest of the bytes that call returned —
+so a figure the agent cites is bound to the exact bytes it read. Asking it to
+name its source has an answer.
 
 ## Next
 

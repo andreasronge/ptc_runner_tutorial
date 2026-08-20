@@ -74,30 +74,20 @@ echo
 echo "==> Built $("$BIN_DIR/ptc" --version) at"
 echo "    $BIN_DIR/ptc"
 
-# --- shared MCP file server --------------------------------------------------
+# --- MCP file server ---------------------------------------------------------
 # Tutorials from chapter 2 onward read files through MCP, which is the only way
-# to give a project a tool. PtcRunner ships a read-only filesystem sample built
-# for exactly this; copy it here so every tutorial can use one stable path.
+# to give a project a tool. The host documents launch the published ptc-fs-mcp
+# npm package through npx, which downloads it on first use — nothing to copy,
+# but Node.js and npx must be on your PATH when you run those chapters.
 
-MCP_SRC="$PTC_RUNNER_DIR/examples/mcp/filesystem"
-MCP_DEST="$REPO_ROOT/mcp/filesystem"
-
-if [ -f "$MCP_SRC/dist/server.js" ]; then
-  mkdir -p "$MCP_DEST"
-  cp "$MCP_SRC/dist/server.js" "$MCP_DEST/server.js"
-  [ -f "$MCP_SRC/NOTICE" ] && cp "$MCP_SRC/NOTICE" "$MCP_DEST/NOTICE"
+if command -v npx >/dev/null 2>&1; then
   echo
-  echo "==> Copied the read-only filesystem MCP server to"
-  echo "    mcp/filesystem/server.js"
-  if command -v node >/dev/null 2>&1; then
-    echo "    node $(node --version) found"
-  else
-    echo "    NOTE: this server needs Node.js 22+, which is not on your PATH."
-  fi
+  echo "==> node $(node --version) and npx found — chapters 2+ launch the"
+  echo "    ptc-fs-mcp file server through npx (downloaded on first use)"
 else
   echo
-  echo "==> NOTE: no filesystem MCP sample at $MCP_SRC/dist/server.js"
-  echo "    Chapter 1 runs without it; later chapters need it."
+  echo "==> NOTE: npx not found. Chapter 1 runs without it; later chapters"
+  echo "    launch the ptc-fs-mcp file server through npx and need Node.js 20.19+."
 fi
 
 # --- PATH --------------------------------------------------------------------

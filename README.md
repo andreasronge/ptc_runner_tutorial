@@ -23,11 +23,13 @@ git clone https://github.com/andreasronge/ptc_runner_tutorial
 cd ptc_runner_tutorial && ./install.sh
 ```
 
-`install.sh` builds PtcRunner's runtime-included release, puts `ptc` on your
-PATH, and copies the read-only filesystem MCP server that chapter 2 onward
-reads files through. The build needs Elixir and Erlang (the checkout pins them
-in `mise.toml`; `mise install` provides both); running `ptc` afterwards does
-not.
+`install.sh` builds PtcRunner's runtime-included release and puts `ptc` on
+your PATH. The build needs Elixir and Erlang (the checkout pins them in
+`mise.toml`; `mise install` provides both); running `ptc` afterwards does not.
+Chapter 2 onward reads files through the published
+[`ptc-fs-mcp`](https://www.npmjs.com/package/ptc-fs-mcp) MCP server, which the
+host documents launch through `npx` — Node.js 20.19+ must be on your PATH, and
+the first run downloads the package.
 
 Supply a model credential for the tutorial you're running:
 

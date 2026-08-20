@@ -13,7 +13,5 @@
 *.private.jsonl
 *.private.json
 
-# Copied from the PtcRunner checkout by install.sh, see mcp/README.md
-mcp/filesystem/
 
 .DS_Store
