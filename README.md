@@ -41,6 +41,11 @@ chmod 600 01-chief-of-staff/.env
 Fill in an [OpenRouter](https://openrouter.ai/keys) key. Nothing is loaded
 implicitly — each project document names the exact file it reads.
 
+To check that every chapter still runs end-to-end, `./e2e.sh` executes each
+project document against live providers and asserts success — the whole pass
+costs well under a cent. CI runs the same script weekly and on pushes to
+`main` (it needs an `OPENROUTER_API_KEY` repository secret).
+
 ## Tutorials
 
 | # | Tutorial | Ports | Status |

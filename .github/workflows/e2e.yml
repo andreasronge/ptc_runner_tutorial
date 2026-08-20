@@ -1,0 +1,89 @@
+# Run every tutorial chapter end-to-end against live providers. This is the
+# rot guard: PtcRunner is checked out at main and built fresh, so a change on
+# either side that breaks a chapter surfaces here.
+#
+# Needs one repository secret: OPENROUTER_API_KEY. A full pass costs well
+# under a cent on the default DeepSeek flash model.
+
+name: E2E
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout the tutorial
+        uses: actions/checkout@v6
+        with:
+          path: ptc_runner_tutorial
+
+      # install.sh expects the PtcRunner checkout next to this repository.
+      - name: Checkout PtcRunner
+        uses: actions/checkout@v6
+        with:
+          repository: andreasronge/ptc_runner
+          path: ptc_runner
+
+      - name: Read toolchain pins
+        id: pins
+        run: |
+          {
+            echo "erlang=$(sed -n 's/^erlang = "\(.*\)"/\1/p' ptc_runner/mise.toml)"
+            echo "elixir=$(sed -n 's/^elixir = "\(.*\)"/\1/p' ptc_runner/mise.toml)"
+            echo "ptc_sha=$(git -C ptc_runner rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ steps.pins.outputs.erlang }}
+          elixir-version: ${{ steps.pins.outputs.elixir }}
+
+      # The documented floor from ptc-fs-mcp's engines field; running e2e on
+      # exactly this version keeps the floor honest.
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20.19.0'
+
+      - name: Cache the release build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ptc_runner/deps
+            ptc_runner/_build
+          key: ptc-release-${{ runner.os }}-${{ steps.pins.outputs.erlang }}-${{ steps.pins.outputs.elixir }}-${{ steps.pins.outputs.ptc_sha }}
+          restore-keys: |
+            ptc-release-${{ runner.os }}-${{ steps.pins.outputs.erlang }}-${{ steps.pins.outputs.elixir }}-
+
+      - name: Build ptc
+        working-directory: ptc_runner_tutorial
+        run: ./install.sh --no-path
+
+      - name: Run the chapters
+        working-directory: ptc_runner_tutorial
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "The OPENROUTER_API_KEY repository secret is not set" >&2
+            exit 1
+          fi
+          umask 177
+          printf 'OPENROUTER_API_KEY=%s\n' "$OPENROUTER_API_KEY" > 01-chief-of-staff/.env
+          export PATH="$GITHUB_WORKSPACE/ptc_runner/_build/prod/rel/ptc_runner/bin:$PATH"
+          ./e2e.sh
