@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "workflow": {
+    "components": [
+      {
+        "id": "chief.workflow",
+        "path": "workflow.clj",
+        "dependencies": [
+          "agent.core"
+        ]
+      },
+      {
+        "library": "agent.core"
+      }
+    ],
+    "entry": "chief.workflow/run"
+  },
+  "input": {
+    "value": {
+      "task": "We need to ship faster without endangering the raise. How many senior engineers at $200,000 can we hire while keeping at least 18 months of runway, and which candidates should we hire?"
+    }
+  },
+  "providers": {
+    "workflow": [
+      {
+        "name": "chief_model"
+      }
+    ]
+  },
+  "missions": {
+    "financial-analyst": {
+      "components": [
+        {
+          "id": "chief.analyst",
+          "path": "analyst.clj"
+        }
+      ],
+      "data": {
+        "snapshot": {
+          "company": "TechStart Inc",
+          "cash_usd": 10000000,
+          "monthly_burn_usd": 500000,
+          "runway_months": 20,
+          "arr_usd": 2400000,
+          "headcount": 50
+        }
+      }
+    },
+    "recruiter": {
+      "components": [
+        {
+          "id": "chief.recruiter",
+          "path": "recruiter.clj"
+        }
+      ],
+      "data": {
+        "candidates": [
+          {
+            "name": "Sarah Kim",
+            "years_experience": 7,
+            "tech_skills_match": 92,
+            "salary_expectation": 205000,
+            "target_salary": 200000,
+            "has_startup_exp": true,
+            "education": "masters",
+            "culture_score": 85,
+            "notice_period_days": 14
+          },
+          {
+            "name": "Marcus Webb",
+            "years_experience": 4,
+            "tech_skills_match": 78,
+            "salary_expectation": 165000,
+            "target_salary": 200000,
+            "has_startup_exp": false,
+            "education": "bachelors",
+            "culture_score": 80,
+            "notice_period_days": 30
+          },
+          {
+            "name": "Elena Petrov",
+            "years_experience": 9,
+            "tech_skills_match": 88,
+            "salary_expectation": 230000,
+            "target_salary": 200000,
+            "has_startup_exp": true,
+            "education": "phd",
+            "culture_score": 70,
+            "notice_period_days": 45
+          },
+          {
+            "name": "Jordan Lee",
+            "years_experience": 2,
+            "tech_skills_match": 70,
+            "salary_expectation": 140000,
+            "target_salary": 200000,
+            "has_startup_exp": false,
+            "education": "bachelors",
+            "culture_score": 90,
+            "notice_period_days": 7
+          },
+          {
+            "name": "Amara Diallo",
+            "years_experience": 6,
+            "tech_skills_match": 85,
+            "salary_expectation": 195000,
+            "target_salary": 200000,
+            "has_startup_exp": true,
+            "education": "bachelors",
+            "culture_score": 82,
+            "notice_period_days": 21
+          }
+        ]
+      }
+    }
+  },
+  "limits": {
+    "run_duration_ms": 300000,
+    "workflow_timeout_ms": 240000,
+    "subordinate_evaluations": 40,
+    "workflow_capability_calls": 120,
+    "mission_capability_calls": 60
+  },
+  "labels": {
+    "name": "chief-of-staff-04-specialists",
+    "tags": {
+      "mode": "agent"
+    }
+  }
+}

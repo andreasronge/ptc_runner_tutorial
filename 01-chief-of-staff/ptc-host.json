@@ -6,7 +6,7 @@
   },
   "limits": {
     "run_duration_ms": 300000,
-    "workflow_timeout_ms": 120000,
+    "workflow_timeout_ms": 240000,
     "subordinate_evaluations": 100,
     "workflow_capability_calls": 200,
     "mission_capability_calls": 200

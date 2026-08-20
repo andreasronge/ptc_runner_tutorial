@@ -216,11 +216,14 @@ operator installs a ceiling, and the manifest asks for a value within it:
 
 ```json
 // ptc-host.json
-"limits": {"workflow_timeout_ms": 120000}
+"limits": {"workflow_timeout_ms": 240000}
 
 // ptc.json
 "limits": {"workflow_timeout_ms": 120000}
 ```
+
+(The host ceiling is 240000 because chapter 4 needs it; this chapter's
+manifest asks for less, which is always allowed.)
 
 Setting only the host ceiling changes nothing. Setting only the manifest fails,
 because it cannot exceed what the host installed.
