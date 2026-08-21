@@ -6,6 +6,13 @@
 # Run artifacts: traces, envelopes, and the inspection capture.
 .ptc/
 
+# Per-case artifacts written by ptc-suite-mcp: inputs, results, envelopes,
+# traces. Rewritten on every attempt; nothing here is worth committing.
+.ptc-suite/
+
+# The suite runner's one dependency, installed with npm.
+node_modules/
+
 # Private artifacts reserved by --inspect / --private-output. These are
 # owner-only and can contain prompts, model responses and generated source.
 .ptc-private-*/

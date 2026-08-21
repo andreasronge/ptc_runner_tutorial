@@ -1,0 +1,21 @@
+{
+  "name": "ptc-suite-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Run host-owned validation cases against a PtcRunner project, over stdio MCP or from the command line.",
+  "license": "MIT",
+  "author": "Andreas Ronge",
+  "type": "module",
+  "bin": {
+    "ptc-suite-mcp": "src/cli.js"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "node --test --test-reporter=spec test/*.test.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "name": "01-one-bounded-run",
+  "description": "The chapter's own question, and two the chapter never shows. Nothing but the model and the task, so a held-out failure is the agent loop, not a tool.",
+  "project": "01-one-bounded-run.ptc-project.json",
+  "cases": [
+    {
+      "name": "observed-runway",
+      "description": "The input the chapter ships, and the answer its README prints.",
+      "input": {
+        "task": "TechStart Inc has $10,000,000 in the bank and burns $500,000 a month. Compute the runway in whole months and return a map with the keys \"runway_months\", \"cash_usd\" and \"monthly_burn_usd\"."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value.runway_months", "equals": 20 },
+          { "path": "value.cash_usd", "equals": 10000000 },
+          { "path": "value.monthly_burn_usd", "equals": 500000 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 6,
+        "max_cost_usd": 0.02
+      }
+    },
+    {
+      "name": "held-out-smaller-balance",
+      "description": "Same shape, different arithmetic: 7,500,000 / 625,000 = 12.",
+      "input": {
+        "task": "TechStart Inc has $7,500,000 in the bank and burns $625,000 a month. Compute the runway in whole months and return a map with the keys \"runway_months\", \"cash_usd\" and \"monthly_burn_usd\"."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value.runway_months", "equals": 12 },
+          { "path": "value.cash_usd", "equals": 7500000 },
+          { "path": "value.monthly_burn_usd", "equals": 625000 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 6,
+        "max_cost_usd": 0.02
+      }
+    },
+    {
+      "name": "held-out-larger-burn",
+      "description": "6,300,000 / 450,000 = 14, so a memorised 20 fails here.",
+      "input": {
+        "task": "TechStart Inc has $6,300,000 in the bank and burns $450,000 a month. Compute the runway in whole months and return a map with the keys \"runway_months\", \"cash_usd\" and \"monthly_burn_usd\"."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value.runway_months", "equals": 14 },
+          { "path": "value.cash_usd", "equals": 6300000 },
+          { "path": "value.monthly_burn_usd", "equals": 450000 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 6,
+        "max_cost_usd": 0.02
+      }
+    }
+  ]
+}
