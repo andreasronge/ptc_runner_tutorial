@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "name": "04-specialists",
+  "description": "Whether the two specialists still hand work to each other. The affordable headcount is arithmetic chief.analyst does, so each held-out case has one right answer, and the recruiter must hire exactly that many.",
+  "project": "04-specialists.ptc-project.json",
+  "cases": [
+    {
+      "name": "observed-hiring-plan",
+      "description": "The chapter's question: $200,000 seniors against an 18 month floor. Two are affordable (18.4 months); a third drops it to 17.7.",
+      "input": {
+        "task": "We need to ship faster without endangering the raise. How many senior engineers at $200,000 can we hire while keeping at least 18 months of runway, and which candidates should we hire?"
+      },
+      "expect": {
+        "result_keys": ["analysis.reasoning", "hiring_plan.reasoning", "hiring_plan.passed_over"],
+        "result": [
+          { "path": "analysis.headcount", "equals": 2 },
+          { "path": "analysis.new_runway_months", "type": "number", "min": 18 },
+          { "path": "hiring_plan.hire", "type": "array", "length": 2 },
+          { "path": "hiring_plan.total_annual_salary_usd", "type": "number", "min": 1 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 16,
+        "max_cost_usd": 0.1
+      }
+    },
+    {
+      "name": "held-out-tighter-floor",
+      "description": "A 19 month floor: only one hire clears it (19.17 months), so the recruiter must hire exactly one.",
+      "input": {
+        "task": "We need to ship faster without endangering the raise. How many senior engineers at $200,000 can we hire while keeping at least 19 months of runway, and which candidates should we hire?"
+      },
+      "expect": {
+        "result": [
+          { "path": "analysis.headcount", "equals": 1 },
+          { "path": "analysis.new_runway_months", "type": "number", "min": 19 },
+          { "path": "hiring_plan.hire", "type": "array", "length": 1 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 16,
+        "max_cost_usd": 0.1
+      }
+    },
+    {
+      "name": "held-out-cheaper-salary",
+      "description": "$150,000 engineers against the same 18 month floor: three are affordable (18.22 months), a fourth is not.",
+      "input": {
+        "task": "We need to ship faster without endangering the raise. How many senior engineers at $150,000 can we hire while keeping at least 18 months of runway, and which candidates should we hire?"
+      },
+      "expect": {
+        "result": [
+          { "path": "analysis.headcount", "equals": 3 },
+          { "path": "analysis.new_runway_months", "type": "number", "min": 18 },
+          { "path": "hiring_plan.hire", "type": "array", "length": 3 }
+        ],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 16,
+        "max_cost_usd": 0.1
+      }
+    }
+  ]
+}

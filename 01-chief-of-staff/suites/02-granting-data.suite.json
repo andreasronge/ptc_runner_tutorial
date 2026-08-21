@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "name": "02-granting-data",
+  "description": "Whether the grant is real. Every case asserts that files.read was actually called, and the held-out cases ask for figures that exist only in the CSV.",
+  "project": "02-granting-data.ptc-project.json",
+  "cases": [
+    {
+      "name": "observed-conflicting-sources",
+      "description": "The chapter's question: the snapshot says 500,000 a month, the CSV's last row says 525,000.",
+      "input": {
+        "task": "What's our runway? Check the financial data files as well as the snapshot, and if they disagree say so: report each figure, name the source you took it from, and say which one you would give the CEO and why."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value", "matches": "525[,._]?000" },
+          { "path": "value", "matches": "snapshot" }
+        ],
+        "capabilities_called": ["mission/files.read"],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 10,
+        "max_cost_usd": 0.05
+      }
+    },
+    {
+      "name": "held-out-net-burn-may",
+      "description": "A figure only burn_rate.csv holds: the 2024-05 row's Net_Burn. The snapshot cannot answer this.",
+      "input": {
+        "task": "Read the burn rate data file and report the Net_Burn recorded for the month 2024-05. Return a map with the keys \"net_burn\" (the number) and \"source\" (the file name you read it from)."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value.net_burn", "equals": 245000 },
+          { "path": "value.source", "contains": "burn_rate" }
+        ],
+        "capabilities_called": ["mission/files.read"],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 10,
+        "max_cost_usd": 0.05
+      }
+    },
+    {
+      "name": "held-out-headcount-june",
+      "description": "The same file, a different column and row: Headcount for 2024-06 is 53, while the snapshot says 50.",
+      "input": {
+        "task": "Read the burn rate data file and report the Headcount recorded for the month 2024-06. Return a map with the keys \"headcount\" (the number) and \"source\" (the file name you read it from)."
+      },
+      "expect": {
+        "result": [
+          { "path": "ok", "equals": true },
+          { "path": "value.headcount", "equals": 53 },
+          { "path": "value.source", "contains": "burn_rate" }
+        ],
+        "capabilities_called": ["mission/files.read"],
+        "no_capability_refusals": true,
+        "max_subordinate_evaluations": 10,
+        "max_cost_usd": 0.05
+      }
+    }
+  ]
+}
